@@ -1,0 +1,75 @@
+name: build
+
+on:
+  push
+env:
+  VER_BINUTILS: 2.38.50
+  VER_GDB: 13.0.50.20220609
+  DIR_SRC: .src
+  DIR_PACKAGE: .pkg
+
+jobs:
+  tarball:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "clone"
+        uses: actions/checkout@v2
+      - name: "prereq"
+        run: |
+          ./pkg_script/ubuntu_setup.sh
+      - name: "src-release"
+        run: |
+          ./src-release.sh -x binutils
+          ./src-release.sh -x gdb
+          mkdir ${{ env.DIR_SRC }}
+          mv binutils-*.tar.xz ${{ env.DIR_SRC }}/
+          mv gdb-*.tar.xz ${{ env.DIR_SRC }}/
+      - name: "upload binutils"
+        uses: actions/upload-artifact@v2
+        with:
+          name: binutils.tar.xz
+          path: ${{ env.DIR_SRC }}/binutils-*.tar.xz
+      - name: "upload gdb"
+        uses: actions/upload-artifact@v2
+        with:
+          name: gdb.tar.xz
+          path: ${{ env.DIR_SRC }}/gdb-*.tar.xz
+
+  debian:
+    needs: tarball
+    runs-on: ubuntu-20.04
+    env:
+      PKG_TARGET: ubuntu20
+      SECT: nightly
+    steps:
+      - name: "clone"
+        uses: actions/checkout@v2
+      - name: "download binutils"
+        uses: actions/download-artifact@v2
+        with:
+          name: binutils.tar.xz
+          path: ${{ env.DIR_SRC }}
+      - name: "download gdb"
+        uses: actions/download-artifact@v2
+        with:
+          name: gdb.tar.xz
+          path: ${{ env.DIR_SRC }}
+      - name: "prereq"
+        run: |
+          ./pkg_script/ubuntu_setup.sh
+      - name: "package"
+        run: |
+          DEBIAN=debian_binutils PROJ=riscv64-binutils PROJ_ORG=binutils VER=${{ env.VER_BINUTILS }} \
+            ./pkg_script/ubuntu_package.sh
+          DEBIAN=debian_gdb PROJ=riscv64-gdb PROJ_ORG=gdb VER=${{ env.VER_GDB }} \
+            ./pkg_script/ubuntu_package.sh
+      - name: "upload binutils"
+        uses: actions/upload-artifact@v2
+        with:
+          name: binutils.deb
+          path: pkg_ubuntu20/riscv64-binutils*
+      - name: "upload gdb"
+        uses: actions/upload-artifact@v2
+        with:
+          name: gdb.deb
+          path: pkg_ubuntu20/riscv64-gdb*
