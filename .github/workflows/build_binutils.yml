@@ -1,0 +1,58 @@
+name: build binutils
+
+on:
+  push:
+    branches:
+      - main
+      - binutils-*
+env:
+  VER_BINUTILS: 2.38
+  DIR_SRC: .src
+  DIR_PACKAGE: .pkg
+
+jobs:
+  tarball:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "clone"
+        uses: actions/checkout@v2
+      - name: "prereq"
+        run: |
+          ./pkg_script/ubuntu_setup.sh
+      - name: "src-release"
+        run: |
+          ./src-release.sh -x binutils
+          mkdir ${{ env.DIR_SRC }}
+          mv binutils-*.tar.xz ${{ env.DIR_SRC }}/
+      - name: "upload binutils"
+        uses: actions/upload-artifact@v2
+        with:
+          name: binutils.tar.xz
+          path: ${{ env.DIR_SRC }}/binutils-*.tar.xz
+
+  debian:
+    needs: tarball
+    runs-on: ubuntu-20.04
+    env:
+      PKG_TARGET: ubuntu20
+      SECT: release
+    steps:
+      - name: "clone"
+        uses: actions/checkout@v2
+      - name: "download binutils"
+        uses: actions/download-artifact@v2
+        with:
+          name: binutils.tar.xz
+          path: ${{ env.DIR_SRC }}
+      - name: "prereq"
+        run: |
+          ./pkg_script/ubuntu_setup.sh
+      - name: "package binutils"
+        run: |
+          DEBIAN=debian_binutils PROJ=riscv64-binutils PROJ_ORG=binutils VER=${{ env.VER_BINUTILS }} \
+            ./pkg_script/ubuntu_package.sh
+      - name: "upload binutils"
+        uses: actions/upload-artifact@v2
+        with:
+          name: binutils.deb
+          path: pkg_ubuntu20/riscv64-binutils*

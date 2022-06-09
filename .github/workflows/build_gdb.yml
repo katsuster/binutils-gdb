@@ -1,0 +1,58 @@
+name: build gdb
+
+on:
+  push:
+    branches:
+      - main
+      - gdb-*
+env:
+  VER_GDB: 10.2.90.20210703
+  DIR_SRC: .src
+  DIR_PACKAGE: .pkg
+
+jobs:
+  tarball:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "clone"
+        uses: actions/checkout@v2
+      - name: "prereq"
+        run: |
+          ./pkg_script/ubuntu_setup.sh
+      - name: "src-release"
+        run: |
+          ./src-release.sh -x gdb
+          mkdir ${{ env.DIR_SRC }}
+          mv gdb-*.tar.xz ${{ env.DIR_SRC }}/
+      - name: "upload gdb"
+        uses: actions/upload-artifact@v2
+        with:
+          name: gdb.tar.xz
+          path: ${{ env.DIR_SRC }}/gdb-*.tar.xz
+
+  debian:
+    needs: tarball
+    runs-on: ubuntu-20.04
+    env:
+      PKG_TARGET: ubuntu20
+      SECT: release
+    steps:
+      - name: "clone"
+        uses: actions/checkout@v2
+      - name: "download gdb"
+        uses: actions/download-artifact@v2
+        with:
+          name: gdb.tar.xz
+          path: ${{ env.DIR_SRC }}
+      - name: "prereq"
+        run: |
+          ./pkg_script/ubuntu_setup.sh
+      - name: "package gdb"
+        run: |
+          DEBIAN=debian_gdb PROJ=riscv64-gdb PROJ_ORG=gdb VER=${{ env.VER_GDB }} \
+            ./pkg_script/ubuntu_package.sh
+      - name: "upload gdb"
+        uses: actions/upload-artifact@v2
+        with:
+          name: gdb.deb
+          path: pkg_ubuntu20/riscv64-gdb*
