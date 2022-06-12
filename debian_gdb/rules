@@ -1,0 +1,74 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+build_dir = build
+
+PACKAGE = riscv64-binutils
+PREFIX = /opt/riscv
+
+PWD := $(shell pwd)
+PKGVER := $(shell head -1 PKGVERSION)
+
+OPTS_BINUTILS = \
+	--enable-binutils \
+	--enable-gas \
+	--enable-ld \
+	--enable-gold \
+	--enable-gprof \
+	--enable-sim \
+	--disable-gdb
+OPTS_GDB = \
+	--disable-binutils \
+	--disable-gas \
+	--disable-ld \
+	--disable-gold \
+	--disable-gprof \
+	--disable-sim \
+	--enable-gdb
+
+####	  --with-python=/usr/bin/python2 \
+
+define configure_macro
+	$(eval PROJ = $(1))
+	$(eval OPTS = $(2))
+	mkdir -p $(build_dir)_$(PROJ) && \
+	cd $(build_dir)_$(PROJ) && \
+	../configure \
+	  --target=riscv64-unknown-elf \
+	  --prefix=$(PREFIX) \
+	  --infodir=$(PREFIX)/share/doc/$(PACKAGE)/info \
+	  --htmldir=$(PREFIX)/share/doc/$(PACKAGE)/html \
+	  --pdfdir=$(PREFIX)/share/doc/$(PACKAGE)/pdf \
+	  --disable-werror \
+	  --with-expat=yes \
+	  --enable-libdecnumber \
+	  --enable-libreadline \
+	  --without-intel_pt \
+	  --with-pkgversion="$(PKGVER)" \
+	  $(OPTS)
+endef
+
+define build_macro
+	$(eval PROJ = $(1))
+	dh_auto_build -B$(build_dir)_$(PROJ) --parallel
+endef
+
+define install_macro
+	$(eval PROJ = $(1))
+	$(MAKE) install -C $(build_dir)_$(PROJ) DESTDIR=$(PWD)/debian/$(PROJ)
+endef
+
+
+override_dh_auto_configure:
+	$(call configure_macro,riscv64-gdb,$(OPTS_GDB))
+
+override_dh_auto_build:
+	$(call build_macro,riscv64-gdb)
+
+# Ignore tests
+override_dh_auto_test:
+
+override_dh_auto_install:
+	$(call install_macro,riscv64-gdb)
