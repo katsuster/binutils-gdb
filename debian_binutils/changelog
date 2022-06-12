@@ -1,0 +1,5 @@
+riscv64-binutils (2.38-1) stable; urgency=medium
+
+  * binutils-2.38
+
+ -- Katsuhiro Suzuki <katsuster@katsuster.net>  Sat, 11 Jul 2022 00:00:00 +0000
