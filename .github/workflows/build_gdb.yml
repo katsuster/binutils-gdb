@@ -1,0 +1,85 @@
+name: build gdb
+
+on:
+  push:
+    branches:
+      - main
+      - riscv-*
+env:
+  VER_GDB: 14.0.50.20230730
+  DIR_SRC: .src
+  DIR_PACKAGE: .pkg
+
+jobs:
+  tarball:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: "clone"
+        uses: actions/checkout@v3
+      - name: "prereq"
+        run: |
+          ./pkg_script/ubuntu_setup.sh
+      - name: "src-release"
+        run: |
+          ./src-release.sh -x gdb
+          mkdir ${{ env.DIR_SRC }}
+          mv gdb-*.tar.xz ${{ env.DIR_SRC }}/
+      - name: "upload gdb"
+        uses: actions/upload-artifact@v3
+        with:
+          name: gdb.tar.xz
+          path: ${{ env.DIR_SRC }}/gdb-*.tar.xz
+
+  ubuntu20:
+    needs: tarball
+    runs-on: ubuntu-20.04
+    env:
+      PKG_TARGET: ubuntu20
+      SECT: release
+    steps:
+      - name: "clone"
+        uses: actions/checkout@v3
+      - name: "download gdb"
+        uses: actions/download-artifact@v3
+        with:
+          name: gdb.tar.xz
+          path: ${{ env.DIR_SRC }}
+      - name: "prereq"
+        run: |
+          ./pkg_script/ubuntu_setup.sh
+      - name: "package gdb"
+        run: |
+          DEBIAN=debian_gdb PROJ=riscv64-gdb PROJ_ORG=gdb VER=${{ env.VER_GDB }} \
+            ./pkg_script/ubuntu_package.sh
+      - name: "upload gdb"
+        uses: actions/upload-artifact@v3
+        with:
+          name: gdb_${{ env.PKG_TARGET }}.deb
+          path: pkg_${{ env.PKG_TARGET }}/riscv64-*.deb
+
+  ubuntu22:
+    needs: tarball
+    runs-on: ubuntu-22.04
+    env:
+      PKG_TARGET: ubuntu22
+      SECT: release
+    steps:
+      - name: "clone"
+        uses: actions/checkout@v3
+      - name: "download gdb"
+        uses: actions/download-artifact@v3
+        with:
+          name: gdb.tar.xz
+          path: ${{ env.DIR_SRC }}
+      - name: "prereq"
+        run: |
+          ./pkg_script/ubuntu_setup.sh
+      - name: "package gdb"
+        run: |
+          DEBIAN=debian_gdb PROJ=riscv64-gdb PROJ_ORG=gdb VER=${{ env.VER_GDB }} \
+            ./pkg_script/ubuntu_package.sh
+      - name: "upload gdb"
+        uses: actions/upload-artifact@v3
+        with:
+          name: gdb_${{ env.PKG_TARGET }}.deb
+          path: pkg_${{ env.PKG_TARGET }}/riscv64-*.deb
