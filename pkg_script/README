@@ -1,0 +1,32 @@
+This document describes how to make debian packages by manually.
+
+# Create source tarballs
+
+mkdir -p .src
+cd .src
+cp -a ../* ./
+./src-release.sh -x binutils
+./src-release.sh -x gdb
+
+# Create binutils package
+
+PKG_TARGET=ubuntu20 \
+SECT=release \
+DEBIAN=debian_binutils \
+PROJ=riscv64-binutils \
+PROJ_ORG=binutils \
+VER=2.40.90 \
+  ./pkg_script/ubuntu_package.sh
+
+# Create gdb package
+
+PKG_TARGET=ubuntu20 \
+SECT=release \
+DEBIAN=debian_gdb \
+PROJ=riscv64-gdb \
+PROJ_ORG=gdb \
+VER=14.0.50.20230730 \
+  ./pkg_script/ubuntu_package.sh
+
+Debian package and related files are generated on pkg_${PKG_TARGET}/
+(ex. pkg_ubuntu20) directory.

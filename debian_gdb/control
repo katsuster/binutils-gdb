@@ -1,0 +1,24 @@
+Source: riscv64-gdb
+Section: devel
+Priority: optional
+Maintainer: Katsuhiro Suzuki <katsuster@katsuster.net>
+Standards-Version: 3.9.7
+Build-Depends: debhelper (>= 9)
+
+Package: riscv64-gdb
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpython3.8
+Description: GNU debugger for RISC-V processors
+ Bare metal binutils for embedded RISC-V chips.
+
+Package: riscv64-linux-glibc-gdb
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpython3.8
+Description: GNU debugger for RISC-V processors
+ Linux and GNU C library binutils for RISC-V chips.
+
+Package: riscv64-linux-musl-gdb
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpython3.8
+Description: GNU debugger for RISC-V processors
+ Linux and musl C library binutils for RISC-V chips.

@@ -1,0 +1,24 @@
+Source: riscv64-binutils
+Section: devel
+Priority: optional
+Maintainer: Katsuhiro Suzuki <katsuster@katsuster.net>
+Standards-Version: 3.9.7
+Build-Depends: debhelper (>= 9)
+
+Package: riscv64-binutils
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: GNU assembler, linker and binary utilities for RISC-V processors
+ Bare metal binutils for embedded RISC-V chips.
+
+Package: riscv64-linux-glibc-binutils
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: GNU assembler, linker and binary utilities for RISC-V processors
+ Linux and GNU C library binutils for RISC-V chips.
+
+Package: riscv64-linux-musl-binutils
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: GNU assembler, linker and binary utilities for RISC-V processors
+ Linux and musl C library binutils for RISC-V chips.

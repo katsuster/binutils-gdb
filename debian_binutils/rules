@@ -1,0 +1,77 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+BUILD_BASE = build
+PREFIX_BASE = /opt/riscv
+
+PWD := $(shell pwd)
+PKGVER := $(shell head -1 PKGVERSION)
+
+PROJ_LIST   ?= riscv64-binutils riscv64-linux-glibc-binutils riscv64-linux-musl-binutils
+TARGET_LIST ?= riscv64-unknown-elf riscv64-unknown-linux-gnu riscv64-unknown-linux-musl
+
+BUILD   = $(BUILD_BASE)_$(PROJ)
+PREFIX  = $(PREFIX_BASE)
+SYSROOT = $(PREFIX_BASE)/$(TARGET)/sysroot
+DEST    = $(PWD)/debian/$(PROJ)
+DESTPRE = $(DEST)/$(PREFIX)
+DESTSYS = $(DEST)/$(SYSROOT)
+
+define configure_macro
+	$(eval PROJ    = $(word $(1),$(PROJ_LIST)))
+	$(eval TARGET  = $(word $(1),$(TARGET_LIST)))
+	mkdir -p $(BUILD) && cd $(BUILD) && \
+	../configure \
+	  --target=$(TARGET) \
+	  --prefix=$(PREFIX) \
+	  --libdir=$(PREFIX)/lib/$(PROJ) \
+	  --infodir=$(PREFIX)/share/doc/$(PROJ)/info \
+	  --htmldir=$(PREFIX)/share/doc/$(PROJ)/html \
+	  --pdfdir=$(PREFIX)/share/doc/$(PROJ)/pdf \
+	  --disable-gdb \
+	  --disable-werror \
+	  --enable-binutils \
+	  --enable-gas \
+	  --enable-gold \
+	  --enable-gprof \
+	  --enable-ld \
+	  --enable-sim \
+	  --with-expat=yes \
+	  --enable-libdecnumber \
+	  --enable-libreadline \
+	  --without-intel_pt \
+	  --with-pkgversion="$(PKGVER)"
+endef
+
+define build_macro
+	$(eval PROJ    = $(word $(1),$(PROJ_LIST)))
+	dh_auto_build -B$(BUILD) --parallel
+endef
+
+define install_macro
+	$(eval PROJ    = $(word $(1),$(PROJ_LIST)))
+	$(MAKE) install -C $(BUILD) DESTDIR=$(DEST)
+	rm -rf \
+	  $(DESTPRE)/share/info \
+	  $(DESTPRE)/share/locale
+endef
+
+override_dh_auto_configure:
+	$(call configure_macro,1)
+	$(call configure_macro,2)
+	$(call configure_macro,3)
+
+override_dh_auto_build:
+	$(call build_macro,1)
+	$(call build_macro,2)
+	$(call build_macro,3)
+
+# Ignore tests
+override_dh_auto_test:
+
+override_dh_auto_install:
+	$(call install_macro,1)
+	$(call install_macro,2)
+	$(call install_macro,3)

@@ -1,0 +1,25 @@
+riscv64-gdb (14.0.50-1) stable; urgency=medium
+
+  * gdb-14.0.50
+
+ -- Katsuhiro Suzuki <katsuster@katsuster.net>  Fri, 10 Nov 2023 00:00:00 +0000
+
+riscv64-gdb (13.0.50-1) stable; urgency=medium
+
+  * gdb-13.0.50
+  * Add musl tools
+
+ -- Katsuhiro Suzuki <katsuster@katsuster.net>  Fri, 27 Jan 2023 00:00:00 +0000
+
+riscv64-gdb (12.0.50-2) stable; urgency=medium
+
+  * gdb-12.0.50
+  * Add linux tools
+
+ -- Katsuhiro Suzuki <katsuster@katsuster.net>  Fri, 8 Jul 2022 00:00:00 +0000
+
+riscv64-gdb (12.0.50-1) stable; urgency=medium
+
+  * gdb-12.0.50
+
+ -- Katsuhiro Suzuki <katsuster@katsuster.net>  Fri, 1 Jul 2022 00:00:00 +0000

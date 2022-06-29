@@ -1,0 +1,25 @@
+riscv64-binutils (2.40.90-1) stable; urgency=medium
+
+  * binutils-2.41
+
+ -- Katsuhiro Suzuki <katsuster@katsuster.net>  Fri, 10 Nov 2023 00:00:00 +0000
+
+riscv64-binutils (2.39-1) stable; urgency=medium
+
+  * binutils-2.39
+  * Add linux-musl tools
+
+ -- Katsuhiro Suzuki <katsuster@katsuster.net>  Fri, 27 Jan 2023 00:00:00 +0000
+
+riscv64-binutils (2.38-2) stable; urgency=medium
+
+  * binutils-2.38
+  * Add linux tools
+
+ -- Katsuhiro Suzuki <katsuster@katsuster.net>  Fri, 8 Jul 2022 00:00:00 +0000
+
+riscv64-binutils (2.38-1) stable; urgency=medium
+
+  * binutils-2.38
+
+ -- Katsuhiro Suzuki <katsuster@katsuster.net>  Fri, 1 Jul 2022 00:00:00 +0000
