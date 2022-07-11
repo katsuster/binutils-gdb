@@ -10,3 +10,9 @@ Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: GNU assembler, linker and binary utilities for RISC-V processors
  Bare metal binutils for embedded RISC-V chips.
+
+Package: riscv64-linux-binutils
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: GNU assembler, linker and binary utilities for RISC-V processors
+ Linux binutils for RISC-V chips.

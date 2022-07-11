@@ -5,13 +5,12 @@
 
 build_dir = build
 
-PACKAGE = riscv64-binutils
 PREFIX = /opt/riscv
 
 PWD := $(shell pwd)
 PKGVER := $(shell head -1 PKGVERSION)
 
-OPTS_BINUTILS = \
+OPTS_COMMON_BINUTILS = \
 	--enable-binutils \
 	--enable-gas \
 	--enable-ld \
@@ -20,17 +19,25 @@ OPTS_BINUTILS = \
 	--enable-sim \
 	--disable-gdb
 
+OPTS_BINUTILS = \
+	--target=riscv64-unknown-elf \
+	$(OPTS_COMMON_BINUTILS)
+
+OPTS_LINUX_BINUTILS = \
+	--target=riscv64-unknown-linux-gnu \
+	$(OPTS_COMMON_BINUTILS)
+
 define configure_macro
 	$(eval PROJ = $(1))
 	$(eval OPTS = $(2))
 	mkdir -p $(build_dir)_$(PROJ) && \
 	cd $(build_dir)_$(PROJ) && \
 	../configure \
-	  --target=riscv64-unknown-elf \
 	  --prefix=$(PREFIX) \
-	  --infodir=$(PREFIX)/share/doc/$(PACKAGE)/info \
-	  --htmldir=$(PREFIX)/share/doc/$(PACKAGE)/html \
-	  --pdfdir=$(PREFIX)/share/doc/$(PACKAGE)/pdf \
+	  --libdir=$(PREFIX)/lib/$(PROJ) \
+	  --infodir=$(PREFIX)/share/doc/$(PROJ)/info \
+	  --htmldir=$(PREFIX)/share/doc/$(PROJ)/html \
+	  --pdfdir=$(PREFIX)/share/doc/$(PROJ)/pdf \
 	  --disable-werror \
 	  --with-expat=yes \
 	  --enable-libdecnumber \
@@ -55,12 +62,15 @@ endef
 
 override_dh_auto_configure:
 	$(call configure_macro,riscv64-binutils,$(OPTS_BINUTILS))
+	$(call configure_macro,riscv64-linux-binutils,$(OPTS_LINUX_BINUTILS))
 
 override_dh_auto_build:
 	$(call build_macro,riscv64-binutils)
+	$(call build_macro,riscv64-linux-binutils)
 
 # Ignore tests
 override_dh_auto_test:
 
 override_dh_auto_install:
 	$(call install_macro,riscv64-binutils)
+	$(call install_macro,riscv64-linux-binutils)
