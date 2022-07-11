@@ -55,4 +55,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: gdb.deb
-          path: pkg_ubuntu20/riscv64-gdb*
+          path: pkg_ubuntu20/riscv64-*
