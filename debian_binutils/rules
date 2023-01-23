@@ -23,8 +23,12 @@ OPTS_BINUTILS = \
 	--target=riscv64-unknown-elf \
 	$(OPTS_COMMON_BINUTILS)
 
-OPTS_LINUX_BINUTILS = \
+OPTS_GLIBC_BINUTILS = \
 	--target=riscv64-unknown-linux-gnu \
+	$(OPTS_COMMON_BINUTILS)
+
+OPTS_MUSL_BINUTILS = \
+	--target=riscv64-unknown-linux-musl \
 	$(OPTS_COMMON_BINUTILS)
 
 define configure_macro
@@ -62,15 +66,18 @@ endef
 
 override_dh_auto_configure:
 	$(call configure_macro,riscv64-binutils,$(OPTS_BINUTILS))
-	$(call configure_macro,riscv64-linux-binutils,$(OPTS_LINUX_BINUTILS))
+	$(call configure_macro,riscv64-linux-glibc-binutils,$(OPTS_GLIBC_BINUTILS))
+	$(call configure_macro,riscv64-linux-musl-binutils,$(OPTS_MUSL_BINUTILS))
 
 override_dh_auto_build:
 	$(call build_macro,riscv64-binutils)
-	$(call build_macro,riscv64-linux-binutils)
+	$(call build_macro,riscv64-linux-glibc-binutils)
+	$(call build_macro,riscv64-linux-musl-binutils)
 
 # Ignore tests
 override_dh_auto_test:
 
 override_dh_auto_install:
 	$(call install_macro,riscv64-binutils)
-	$(call install_macro,riscv64-linux-binutils)
+	$(call install_macro,riscv64-linux-glibc-binutils)
+	$(call install_macro,riscv64-linux-musl-binutils)

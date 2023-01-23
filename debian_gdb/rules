@@ -18,14 +18,18 @@ OPTS_COMMON_GDB = \
 	--disable-gprof \
 	--disable-sim \
 	--enable-gdb \
-	--with-python=/usr/bin/python2
+	--with-python=/usr/bin/python3
 
 OPTS_GDB = \
 	--target=riscv64-unknown-elf \
 	$(OPTS_COMMON_GDB)
 
-OPTS_LINUX_GDB = \
+OPTS_GLIBC_GDB = \
 	--target=riscv64-unknown-linux-gnu \
+	$(OPTS_COMMON_GDB)
+
+OPTS_MUSL_GDB = \
+	--target=riscv64-unknown-linux-musl \
 	$(OPTS_COMMON_GDB)
 
 define configure_macro
@@ -66,15 +70,18 @@ endef
 
 override_dh_auto_configure:
 	$(call configure_macro,riscv64-gdb,$(OPTS_GDB))
-	$(call configure_macro,riscv64-linux-gdb,$(OPTS_LINUX_GDB))
+	$(call configure_macro,riscv64-linux-glibc-gdb,$(OPTS_GLIBC_GDB))
+	$(call configure_macro,riscv64-linux-musl-gdb,$(OPTS_MUSL_GDB))
 
 override_dh_auto_build:
 	$(call build_macro,riscv64-gdb)
-	$(call build_macro,riscv64-linux-gdb)
+	$(call build_macro,riscv64-linux-glibc-gdb)
+	$(call build_macro,riscv64-linux-musl-gdb)
 
 # Ignore tests
 override_dh_auto_test:
 
 override_dh_auto_install:
 	$(call install_macro,riscv64-gdb)
-	$(call install_macro,riscv64-linux-gdb)
+	$(call install_macro,riscv64-linux-glibc-gdb)
+	$(call install_macro,riscv64-linux-musl-gdb)

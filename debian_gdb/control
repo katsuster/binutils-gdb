@@ -11,8 +11,14 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, libpython2.7
 Description: GNU debugger for RISC-V processors
  Bare metal binutils for embedded RISC-V chips.
 
-Package: riscv64-linux-gdb
+Package: riscv64-linux-glibc-gdb
 Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}, libpython2.7
 Description: GNU debugger for RISC-V processors
- Linux binutils for RISC-V chips.
+ Linux and GNU C library binutils for RISC-V chips.
+
+Package: riscv64-linux-musl-gdb
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}, libpython2.7
+Description: GNU debugger for RISC-V processors
+ Linux and musl C library binutils for RISC-V chips.

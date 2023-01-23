@@ -1,3 +1,10 @@
+riscv64-binutils (2.38-3) stable; urgency=medium
+
+  * binutils-2.38
+  * Add linux-musl tools
+
+ -- Katsuhiro Suzuki <katsuster@katsuster.net>  Fri, 27 Jan 2023 00:00:00 +0000
+
 riscv64-binutils (2.38-2) stable; urgency=medium
 
   * binutils-2.38
