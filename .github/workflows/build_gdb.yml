@@ -6,7 +6,7 @@ on:
       - main
       - riscv-*
 env:
-  VER_GDB: 12.0.50.20220209
+  VER_GDB: 13.0.50.20220805
   DIR_SRC: .src
   DIR_PACKAGE: .pkg
 

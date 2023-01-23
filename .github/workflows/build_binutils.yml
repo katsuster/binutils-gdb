@@ -6,7 +6,7 @@ on:
       - main
       - riscv-*
 env:
-  VER_BINUTILS: 2.38
+  VER_BINUTILS: 2.39
   DIR_SRC: .src
   DIR_PACKAGE: .pkg
 
