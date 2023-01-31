@@ -54,5 +54,5 @@ jobs:
       - name: "upload binutils"
         uses: actions/upload-artifact@v3
         with:
-          name: binutils.deb
-          path: pkg_ubuntu20/riscv64-*
+          name: binutils_${{ env.PKG_TARGET }}.deb
+          path: pkg_${{ env.PKG_TARGET }}/riscv64-*

@@ -54,5 +54,5 @@ jobs:
       - name: "upload gdb"
         uses: actions/upload-artifact@v3
         with:
-          name: gdb.deb
-          path: pkg_ubuntu20/riscv64-*
+          name: gdb_${{ env.PKG_TARGET }}.deb
+          path: pkg_${{ env.PKG_TARGET }}/riscv64-*
