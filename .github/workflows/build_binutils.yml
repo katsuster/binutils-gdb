@@ -30,7 +30,7 @@ jobs:
           name: binutils.tar.xz
           path: ${{ env.DIR_SRC }}/binutils-*.tar.xz
 
-  debian:
+  ubuntu20:
     needs: tarball
     runs-on: ubuntu-20.04
     env:
@@ -55,4 +55,31 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: binutils_${{ env.PKG_TARGET }}.deb
-          path: pkg_${{ env.PKG_TARGET }}/riscv64-*
+          path: pkg_${{ env.PKG_TARGET }}/riscv64-*.deb
+
+  ubuntu22:
+    needs: tarball
+    runs-on: ubuntu-22.04
+    env:
+      PKG_TARGET: ubuntu22
+      SECT: release
+    steps:
+      - name: "clone"
+        uses: actions/checkout@v3
+      - name: "download binutils"
+        uses: actions/download-artifact@v3
+        with:
+          name: binutils.tar.xz
+          path: ${{ env.DIR_SRC }}
+      - name: "prereq"
+        run: |
+          ./pkg_script/ubuntu_setup.sh
+      - name: "package binutils"
+        run: |
+          DEBIAN=debian_binutils PROJ=riscv64-binutils PROJ_ORG=binutils VER=${{ env.VER_BINUTILS }} \
+            ./pkg_script/ubuntu_package.sh
+      - name: "upload binutils"
+        uses: actions/upload-artifact@v3
+        with:
+          name: binutils_${{ env.PKG_TARGET }}.deb
+          path: pkg_${{ env.PKG_TARGET }}/riscv64-*.deb
