@@ -24,7 +24,7 @@ define configure_macro
 	$(eval TARGET  = $(word $(1),$(TARGET_LIST)))
 	mkdir -p $(BUILD) && cd $(BUILD) && \
 	../configure \
-	  --target=riscv64-unknown-elf \
+	  --target=${TARGET} \
 	  --prefix=$(PREFIX) \
 	  --libdir=$(PREFIX)/lib/$(PROJ) \
 	  --infodir=$(PREFIX)/share/doc/$(PROJ)/info \
